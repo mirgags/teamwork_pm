@@ -3,7 +3,9 @@ import urllib2
 import json
 import datetime
 
-
+#class TWPM(self):
+#    def __init__(self):
+#        self.account =
 
 def getApiKey():
     curPath = os.getcwd()
@@ -11,6 +13,7 @@ def getApiKey():
     apikey = f.readline().strip()
     f.close()
     return apikey
+
 
 def authUrl(theurl):
     passman = urllib2.HTTPPasswordMgrWithDefaultRealm()
