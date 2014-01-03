@@ -1,7 +1,9 @@
 import os
+import urllib
 import urllib2
 import json
 import datetime
+import base64
 
 #class TWPM(self):
 #    def __init__(self):
@@ -35,18 +37,26 @@ def getUrl(theurl):
 
 def postUrl(theurl, thePost):
 
-    authUrl(theurl)
-    pagehandle = urllib2.urlopen(theurl, json.loads(thePost))
+    req = urllib2.Request(theurl)
+#    req.add_data(thePost)
+    auth = 'Basic ' + base64.urlsafe_b64encode("%s:%s" % (getApiKey(), 'x'))
+    req.add_header('Authorization', auth)
+    req.add_header('Content-Type', 'application/json')
+
+#    authUrl(theurl)
+    pagehandle = urllib2.urlopen(req, json.dumps(thePost))
 
 theurl = 'http://clients.pint.com/todo_items/2592624.json'
 
 getUrl(theurl)
 
 theurl = 'http://clients.pint.com/projects/86732/todo_lists.json'
-theTasklistDict = {'name': 'test list', 'private type': True, 'pinned                         type': True, 'tracked type': True, 'description': 'this                    is test of api integration'}
+theTasklistDict = {'todo-list': {'name': 'test list',                                                       'private type': True,                                                      'pinned type': True,                                                       'tracked type': True,                                                      'description': 'this is test of                                            api integration'}}
 
 
-theJson = json.JSONEncoder().encode(theTasklistDict)
+#theJson = json.JSONEncoder().encode(theTasklistDict)
+
+print json.dumps(theTasklistDict)
 
 
-postUrl(theurl, theJson)    
+postUrl(theurl, theTasklistDict)    
