@@ -5,9 +5,14 @@ import json
 import datetime
 import base64
 
-#class TWPM(self):
+#class apiCall(object):
 #    def __init__(self):
-#        self.account =
+#        self.id_num = None
+#        self.url = ""
+#        self.api = None
+#
+#    def createTasklist(self):
+
 
 def getApiKey():
     curPath = os.getcwd()
@@ -33,7 +38,7 @@ def getUrl(theurl):
     authUrl(theurl)
     pagehandle = urllib2.urlopen(theurl)
     
-    print pagehandle.read()
+    return pagehandle.read()
 
 def postUrl(theurl, thePost):
 
@@ -44,19 +49,24 @@ def postUrl(theurl, thePost):
     req.add_header('Content-Type', 'application/json')
 
 #    authUrl(theurl)
-    pagehandle = urllib2.urlopen(req, json.dumps(thePost))
+#    pagehandle = 
+    return urllib2.urlopen(req, json.dumps(thePost))
+#    return pagehandle.read()
+
 
 theurl = 'http://clients.pint.com/todo_items/2592624.json'
 
-getUrl(theurl)
+#getUrl(theurl)
 
 theurl = 'http://clients.pint.com/projects/86732/todo_lists.json'
-theTasklistDict = {'todo-list': {'name': 'test list',                                                       'private type': True,                                                      'pinned type': True,                                                       'tracked type': True,                                                      'description': 'this is test of                                            api integration'}}
+theTasklistDict = {'todo-list': {'name': '2nd test list',                                                   'private type': True,                                                      'pinned type': True,                                                       'tracked type': True,                                                      'description': 'another test of                                            api integration'}}
 
 
-#theJson = json.JSONEncoder().encode(theTasklistDict)
+#theJson = json.dumps(theTasklistDict)
 
-print json.dumps(theTasklistDict)
+#print json.dumps(theTasklistDict)
 
 
-postUrl(theurl, theTasklistDict)    
+newList = dict(postUrl(theurl, theTasklistDict).info())
+print newList
+print newList['id']
