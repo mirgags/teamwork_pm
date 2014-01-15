@@ -20,60 +20,60 @@ import base64
 #    def closeTask(self)
 
 ### Retrieve API key from local file ./teamworkpm_api_key.txt
-    def getApiKey():
-        curPath = os.getcwd()
-        f = open('%s/teamworkpm_api_key.txt' % curPath, 'rb')
-        apikey = f.readline().strip()
-        f.close()
-        return apikey
+def getApiKey():
+    curPath = os.getcwd()
+    f = open('%s/teamworkpm_api_key.txt' % curPath, 'rb')
+    apikey = f.readline().strip()
+    f.close()
+    return apikey
 
 ### Create authorization handler for TeamworkPM
-    def authUrl(theurl):
-        passman = urllib2.HTTPPasswordMgrWithDefaultRealm()
-        passman.add_password(None, theurl, getApiKey(), 'x')
-        
-        authhandler = urllib2.HTTPBasicAuthHandler(passman)
-        
-        opener = urllib2.build_opener(authhandler)
-        
-        urllib2.install_opener(opener)
-        return
+def authUrl(theurl):
+    passman = urllib2.HTTPPasswordMgrWithDefaultRealm()
+    passman.add_password(None, theurl, getApiKey(), 'x')
+    
+    authhandler = urllib2.HTTPBasicAuthHandler(passman)
+    
+    opener = urllib2.build_opener(authhandler)
+    
+    urllib2.install_opener(opener)
+    return
 
 ### GET request to establish parameters
-    def getUrl(theurl):
-        
-        authUrl(theurl)
-        pagehandle = urllib2.urlopen(theurl)
-        
-        return pagehandle.read()
+def getUrl(theurl):
+    
+    authUrl(theurl)
+    pagehandle = urllib2.urlopen(theurl)
+    
+    return pagehandle.read()
 
 ### POST request accepts the Teamwork-specific URL and a JSON object with      the necessary parameters for the action.
-    def postUrl(theurl, thePost):
-    
-        req = urllib2.Request(theurl)
-        auth = 'Basic ' + base64.urlsafe_b64encode("%s:%s" % (getApiKey(), 'x'))
-        req.add_header('Authorization', auth)
-        req.add_header('Content-Type', 'application/json')
-    
-        return urllib2.urlopen(req, json.dumps(thePost))
+def postUrl(theurl, thePost):
+
+    req = urllib2.Request(theurl)
+    auth = 'Basic ' + base64.urlsafe_b64encode("%s:%s" % (getApiKey(), 'x'))
+    req.add_header('Authorization', auth)
+    req.add_header('Content-Type', 'application/json')
+
+    return urllib2.urlopen(req, json.dumps(thePost))
 
 ### PUT request accepts the Teamwork-specific URL and a JSON object with       the necessary parameters for the action.
-    def putUrl(theurl):
-        req = urllib2.Request(url)
-        auth = 'Basic ' + base64.urlsafe_b64encode("%s:%s" % (getApiKey(), 'x'))
-        req.add_header('Authorization', auth)
-        req.add_header("Content-Type", "application/json")
-        req.get_method = lambda: "PUT"
-        return pagehandle = urllib2.urlopen(req, json.dumps(thePut))
+def putUrl(theurl):
+    req = urllib2.Request(url)
+    auth = 'Basic ' + base64.urlsafe_b64encode("%s:%s" % (getApiKey(), 'x'))
+    req.add_header('Authorization', auth)
+    req.add_header("Content-Type", "application/json")
+    req.get_method = lambda: "PUT"
+    return urllib2.urlopen(req, json.dumps(thePut))
 
 ### DELETE request accepts the Teamwork-specific URL.
-    def deleteUrl(theurl):
-        req = urllib2.Request(url)
-        auth = 'Basic ' + base64.urlsafe_b64encode("%s:%s" % (getApiKey(), 'x'))
-        req.add_header('Authorization', auth)
-        req.add_header("Content-Type", "application/json")
-        req.get_method = lambda: "DELETE"
-        return pagehandle = urllib2.urlopen(req)
+def deleteUrl(theurl):
+    req = urllib2.Request(url)
+    auth = 'Basic ' + base64.urlsafe_b64encode("%s:%s" % (getApiKey(), 'x'))
+    req.add_header('Authorization', auth)
+    req.add_header("Content-Type", "application/json")
+    req.get_method = lambda: "DELETE"
+    return urllib2.urlopen(req)
 
 ### This is test code that has been moved to the test file teamwork_test.py
 #theurl = 'http://clients.pint.com/todo_items/2592624.json'
