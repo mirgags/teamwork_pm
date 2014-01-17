@@ -17,12 +17,35 @@ from twpm import *
 #print newList
 #print newList['id']
 
-theDict = {                                                                              "name": "event_fire",                                                      "events": ["push", "issues"],                                              "active": True,                                                            "config": {"url": "http://requestb.in/10gqbm81", "content_type": "json"}                                                                  }
+#theDict = {                                                                              "name": "event_fire",                                                      "events": ["push", "issues"],                                              "active": True,                                                            "config": {"url": "http://requestb.in/1deky0u", "content_type": "json"}                                                                  }
+#
+#theurl = 'https://api.github.com/repos/mirgags/teamwork_pm/hooks'
+#auth = 'Basic' + base64.urlsafe_b64encode('user:password')
+#req = urllib2.Request(theurl)
+#req.add_header('Authorization', auth)
+#req.add_header("content_type", "application/json")
+#try:
+#    handle = urllib2.urlopen(req, json.dumps(theDict))
+#except IOError, e:
+#    if hasattr(e, 'code'):
+#        if e.code != 401:
+#            print 'we got annother error'
+#            print e.code
+#        else:
+#            for keys in e.headers:
+#                print keys, ": ", e.headers[keys]
 
-theurl = 'https://api.github.com/repos/mirgags/teamwork_pm/hooks'
-auth = 'Basic' + base64.urlsafe_b64encode('user:password')
-req = urllib2.Request(theurl)
-req.add_header('Authorization', auth)
-req.add_header("content_type", "application/json")
-urllib2.urlopen(req, json.dumps(theDict))
+theJson = json.loads(getUrl('http://clients.pint.com/projects.json'))
+theProjectList = []
+theTaskListDict = {}
 
+for project in theJson['projects']:
+    theProjectList.append([project['company']['name'],                                                project['name'],                                                           project['id']])
+for project in theProjectList:
+    theJson = json.loads(getUrl('http://clients.pint.com/projects/%s/todo_lists.json' % project[2]))
+    
+#    for taskList in theJson['todo-lists']:
+#        theTaskListDict[taskList['id']] = {'company': project[0],                                                     'project': project[1],                                                     'companyID': project[2]}
+#
+#for project in theTaskListDict:
+#    print project, ": ", theTaskListDict[project], "\n"
