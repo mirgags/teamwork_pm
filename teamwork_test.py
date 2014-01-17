@@ -35,14 +35,48 @@ from twpm import *
 #            for keys in e.headers:
 #                print keys, ": ", e.headers[keys]
 
-theJson = json.loads(getUrl('http://clients.pint.com/projects.json'))
-theProjectList = []
-theTaskListDict = {}
+class twpm(object):
+    def __init__(self):
+        self.name = "TWPM Instance"
+        self.projects = {}
+#        self.loadProjects()
 
-for project in theJson['projects']:
-    theProjectList.append([project['company']['name'],                                                project['name'],                                                           project['id']])
-for project in theProjectList:
-    theJson = json.loads(getUrl('http://clients.pint.com/projects/%s/todo_lists.json' % project[2]))
+    def loadProjects(self):
+        aList = json.loads(getUrl('http://clients.pint.com/projects.json'))
+        for project in aList['projects']:
+            self.projects[project['id']] = {'company': project['company']['name'],                                                                                                                'name': project['name']}
+
+class project(twpm):
+    def __init__(self, idNum):
+        twpm.__init__(self)
+#        self.loadProjects()
+        self.projectName = self.projects[idNum]['name']
+        self.projectID = idNum
+        self.taskList = {}
+
+    def loadTasklist(self):
+        theJson = json.loads(getUrl('http://clients.pint.com/projects/%s/todo_lists.json' % self.projectID))
+        if theJson:
+            for tasklist in theJson['todo-lists']:
+                self.taskList[tasklist['id']] = {'name': tasklist['name'],                                    'description': tasklist['description']                                    }
+###
+#    def getTasklist
+#theProjectList = []
+#theTaskListDict = {}
+#
+#class company(object):
+#    def __init__(self, idNum):
+#        name = ""
+#        companyID = ""
+#        url = getUrl('http://clients.pint.com/projects/%s/todo_lists.json' % idNum)
+#    
+#for project in theJson['projects']:
+#    theProjectList.append([project['company']['name'],                                                project['name'],                                                           project['id']])
+#for project in theProjectList:
+#    theJson = json.loads(getUrl('http://clients.pint.com/projects/%s/todo_lists.json' % project[2]))
+#    for tasklist in theJson['todo-lists']:
+#        if tasklist:
+            
     
 #    for taskList in theJson['todo-lists']:
 #        theTaskListDict[taskList['id']] = {'company': project[0],                                                     'project': project[1],                                                     'companyID': project[2]}
