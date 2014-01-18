@@ -44,13 +44,13 @@ class twpm(object):
     def loadProjects(self):
         aList = json.loads(getUrl('http://clients.pint.com/projects.json'))
         for project in aList['projects']:
-            self.projects[project['id']] = {'company': project['company']['name'],                                                                                                                'name': project['name']}
+            self.projects[project['id']] = project #{'company': project['company']['name'],                                                                                                                'name': project['name']}
 
 class project(twpm):
     def __init__(self, idNum):
         twpm.__init__(self)
 #        self.loadProjects()
-        self.projectName = self.projects[idNum]['name']
+#        self.projectName = self.projects[idNum]['name']
         self.projectID = idNum
         self.taskList = {}
 
@@ -58,7 +58,18 @@ class project(twpm):
         theJson = json.loads(getUrl('http://clients.pint.com/projects/%s/todo_lists.json' % self.projectID))
         if theJson:
             for tasklist in theJson['todo-lists']:
-                self.taskList[tasklist['id']] = {'name': tasklist['name'],                                    'description': tasklist['description']                                    }
+                self.taskList[tasklist['id']] = tasklist #{'name': tasklist['name'],                                    'description': tasklist['description']                                    }
+
+if __name__ == "__main__":
+    t = twpm()
+    t.loadProjects()
+    alist = []
+    for p in t.projects:
+        alist.append(project(p))
+    alist[0].loadTasklist()
+    for aTasklist in alist[0].taskList:
+        print aTasklist, ": ", alist[0].taskList[aTasklist].values(),"\n\n"
+        
 ###
 #    def getTasklist
 #theProjectList = []
