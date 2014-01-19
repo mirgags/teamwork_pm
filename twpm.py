@@ -19,6 +19,72 @@ import base64
 #    def editTask(self, data):
 #    def closeTask(self)
 
+### class of TeamworkPM instance
+class twpm(object):
+    def __init__(self):
+        self.name = "TWPM Instance"
+        self.projects = {}
+#        self.loadProjects()
+### loads all projects in account
+    def loadProjects(self):
+        aList = json.loads(getUrl('http://clients.pint.com/projects.json'))
+        for project in aList['projects']:
+            self.projects[project['id']] = project 
+
+### class of TeamworkPM project(tasklist)
+class project(twpm):
+    def __init__(self, idNum):
+        twpm.__init__(self)
+#        self.loadProjects()
+#        self.projectName = self.projects[idNum]['name']
+        self.projectID = idNum
+        self.taskList = {}
+
+### loads all tasklists in project
+    def loadTasklist(self):
+        theJson = json.loads(getUrl('http://clients.pint.com/projects/%s/todo_lists.json' % self.projectID))
+        if theJson:
+            for tasklist in theJson['todo-lists']:
+                self.taskList[tasklist['id']] = tasklist
+
+### class of TeamworkPM task
+class task(project):
+    def __init__(self, projectidNum, idNum):
+        project.__init__(self, projectidNum)
+        self.attributes = None
+        self.creatorID = ""
+        self.description = ""
+        self.content = ""
+        self.taskID = idNum
+        self.commentsCount = ""
+        self.private = 0
+        self.dueDate = ""
+        self.startDate = ""
+        self.completed = False
+        self.estimatedMinutes = 0
+        self.commentsDict = {}
+
+    def loadTask(self):
+        theJson = json.loads(getUrl('http://clients.pint.com/todo_items/%s.json' % self.taskID))
+        if theJson:
+            self.attributes = theJson['todo-item']
+            self.creatorID = self.attributes['creator-firstname'] + ' ' + self.attributes['creator-lastname']              
+            self.description = self.attributes['description']
+            self.content = self.attributes['content']
+            self.commentsCount = int(self.attributes['comments-count'])
+            self.private = self.attributes['private']
+            self.dueDate = self.attributes['due-date']
+            self.startDate = self.attributes['start-date']
+            if self.attributes['completed'] == 'true':
+                self.completed = True
+            self.estimatedMinutes = self.attributes['estimated-minutes'] 
+
+    def loadComments(self):
+        theJson = json.loads(getUrl('http://clients.pint.com/todo_items/%s/comments.json' % self.taskID))
+        if self.commentsCount > 0:
+            for comment in theJson['comments']:
+                self.commentsDict[comment['id']] = comment
+
 ### Retrieve API key from local file ./teamworkpm_api_key.txt
 def getApiKey():
     curPath = os.getcwd()
