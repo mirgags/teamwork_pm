@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 from twpm import *
-import unicodedata
+import re
 
 #theurl = 'http://clients.pint.com/todo_items/2592624.json'
 #
@@ -42,6 +43,7 @@ if __name__ == "__main__":
     alist = []
     acommentlist = []
     f = open('tw_export.csv', 'wb')
+    f.write('ProjectID|Creator|Description|Content|TaskID|DueDate|StartDate|' +                'EstimatedMinutes|Comments>>(First-Last-Date-Comment)\n')
     for p in t.projects:
         alist.append(project(p))
 #    alist[0].loadTasklist()
@@ -56,17 +58,17 @@ if __name__ == "__main__":
 #                print Task.taskID
                 Task.loadTask()
 #                print Task.attributes
-                f.write("|")
                 try:
-                    f.write(aProject.projectID)
+                    f.write(re.sub(r'\s+', ' ', aProject.projectID))
                 except UnicodeError:
                     pass
                 for att in [Task.creatorID, Task.description, Task.content,                            Task.taskID, Task.dueDate, Task.startDate,                                 Task.estimatedMinutes]:
                     f.write("|")
                     try:
-                        string = att.strip()
-                        for ch in ['\n', r'\r']:
+                        string = re.sub(r'\s+', ' ', att.strip())
+                        for ch in ['\n', r'\r', '\f']:
                             string.replace(ch, ' ')
+                        string.replace('|', 'PIPE')
                         f.write(string)
                     except UnicodeError:
                         pass
@@ -74,30 +76,30 @@ if __name__ == "__main__":
                 for comment in Task.commentsDict:
                     f.write("|")
                     try:
-                        f.write(Task.commentsDict[comment]['author-firstname'])
+                        f.write(Task.commentsDict[comment]['author-firstname'].replace('|', 'PIPE'))
                     except UnicodeError:
                         pass
                     f.write("|")
                     try:
-                        f.write(Task.commentsDict[comment]['author-lastname'])
+                        f.write(Task.commentsDict[comment]['author-lastname'].replace('|', 'PIPE'))
                     except UnicodeError:
                         pass
                     f.write("|")
                     try:
-                        f.write(Task.commentsDict[comment]['datetime'])
+                        f.write(Task.commentsDict[comment]['datetime'].replace('|', 'PIPE'))
                     except UnicodeError:
                         pass
                     f.write("|")
                     try:
-                        string = Task.commentsDict[comment]['body'].strip()
-                        for ch in ['\n', r'\r']:
+                        string = re.sub(r'\s+', ' ', Task.commentsDict[comment]['body'].strip())
+                        for ch in ['\n', r'\r', '\f']:
                             string.replace(ch, ' ')
+                        string.replace('|', 'PIPE')
                         f.write(string)
                     except UnicodeError:
                         pass
 #                    print Task.commentsDict[comment]
                 f.write("\n")
-            f.write(line)
     f.close()
 #        print aTasklist, ": ", alist[0].taskList[aTasklist],"\n\n"
         
