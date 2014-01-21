@@ -57,11 +57,11 @@ class task(project):
         self.content = ""
         self.taskID = idNum
         self.commentsCount = ""
-        self.private = 0
+        self.private = "" 
         self.dueDate = ""
         self.startDate = ""
         self.completed = False
-        self.estimatedMinutes = 0
+        self.estimatedMinutes = ""
         self.commentsDict = {}
 
     def loadTask(self):
