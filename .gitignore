@@ -2,4 +2,7 @@
 *.tmp
 *.csv
 *.pyc
+*.xls
+*.xlsx
+*.xlsm
 teamworkpm_api_key.txt

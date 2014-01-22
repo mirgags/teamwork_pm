@@ -43,7 +43,7 @@ if __name__ == "__main__":
     alist = []
     acommentlist = []
     f = open('tw_export.csv', 'wb')
-    f.write('ProjectID|Creator|Description|Content|TaskID|DueDate|StartDate|' +                'EstimatedMinutes|Comments>>(First-Last-Date-Comment)\n')
+    f.write('ProjectID|CompanyName|Project|Creator|Description|Content|TaskID|' +              'DueDate|StartDate|EstimatedMinutes|' +                                    'Comments>>(First-Last-Date-Comment)\n')
     for p in t.projects:
         alist.append(project(p))
 #    alist[0].loadTasklist()
@@ -62,10 +62,10 @@ if __name__ == "__main__":
                     f.write(re.sub(r'\s+', ' ', aProject.projectID))
                 except UnicodeError:
                     pass
-                for att in [Task.creatorID, Task.description, Task.content,                            Task.taskID, Task.dueDate, Task.startDate,                                 Task.estimatedMinutes]:
+                for att in [Task.companyName, aTask['project-name'],                                  Task.creatorID, Task.description, Task.content,                            Task.taskID, Task.dueDate, Task.startDate,                                 Task.estimatedMinutes]:
                     f.write("|")
                     try:
-                        string = re.sub(r'\s+', ' ', att.strip())
+                        string = re.sub(r'\s+', ' ', att)
                         for ch in ['\n', r'\r', '\f']:
                             string.replace(ch, ' ')
                         string.replace('|', 'PIPE')
@@ -91,7 +91,7 @@ if __name__ == "__main__":
                         pass
                     f.write("|")
                     try:
-                        string = re.sub(r'\s+', ' ', Task.commentsDict[comment]['body'].strip())
+                        string = re.sub(r'\s+', ' ', Task.commentsDict[comment]['body'])
                         for ch in ['\n', r'\r', '\f']:
                             string.replace(ch, ' ')
                         string.replace('|', 'PIPE')

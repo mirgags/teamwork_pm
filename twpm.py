@@ -52,6 +52,7 @@ class task(project):
     def __init__(self, projectidNum, idNum):
         project.__init__(self, projectidNum)
         self.attributes = None
+        self.companyName = ""
         self.creatorID = ""
         self.description = ""
         self.content = ""
@@ -68,6 +69,7 @@ class task(project):
         theJson = json.loads(getUrl('http://clients.pint.com/todo_items/%s.json' % self.taskID))
         if theJson:
             self.attributes = theJson['todo-item']
+            self.companyName = self.attributes['company-name']
             self.creatorID = self.attributes['creator-firstname'] + ' ' + self.attributes['creator-lastname']              
             self.description = self.attributes['description']
             self.content = self.attributes['content']
