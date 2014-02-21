@@ -42,7 +42,7 @@ if __name__ == "__main__":
     t.loadProjects()
     alist = []
     acommentlist = []
-    f = open('tw_export.csv', 'wb')
+    f = open('tw_export_%s.csv' % datetime.datetime.now(), 'wb')
     f.write('ProjectID|CompanyName|Project|Creator|Description|Content|TaskID|' +              'DueDate|StartDate|EstimatedMinutes|' +                                    'Comments>>(First-Last-Date-Comment)\n')
     for p in t.projects:
         alist.append(project(p))
