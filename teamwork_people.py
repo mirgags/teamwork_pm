@@ -30,3 +30,31 @@ for company in companyList:
     print "*****"
 
 print "Count is: %s" % counter
+
+f = open('teamwork_people_%s.csv' % datetime.datetime.now(), 'wb')
+f.write('CompanyID|CompanyName|Contacts|Emails\n')
+for company in companyList:
+    name = ''
+    email = ''
+    for contact in company['contacts']:
+        counter = 0
+        for emailAddress in contact:
+            counter += 1
+        print contact
+        print 'counter is: ', counter
+        for emailAddress in contact:
+            if counter == 1:
+                try:
+                    name = name + contact[emailAddress]['firstname']+ ' ' +                                 contact[emailAddress]['lastname']
+                    email = emailAddress
+                except KeyError:
+                    pass
+            elif counter >=2 :
+                try:
+                    name = name + contact[emailAddress]['firstname']+ ' ' +                                 contact[emailAddress]['lastname'] + ', '
+                    email = email + '%s,' % emailAddress
+                except KeyError:
+                    pass
+            counter -= 1
+    f.write('%s|%s|%s|%s\n' % (company['companyId'],                                                      company['companyName'],                                                    name, email))
+f.close()
