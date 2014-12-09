@@ -42,6 +42,7 @@ class project(twpm):
 
 ### loads all tasklists in project
     def loadTasklist(self):
+        print self.projectID
         theJson = json.loads(getUrl('http://clients.pint.com/projects/%s/todo_lists.json' % self.projectID))
         if theJson:
             for tasklist in theJson['todo-lists']:
@@ -63,6 +64,7 @@ class task(project):
         self.startDate = ""
         self.completed = False
         self.estimatedMinutes = ""
+        self.createdDate = ""
         self.commentsDict = {}
 
     def loadTask(self):
@@ -77,6 +79,7 @@ class task(project):
             self.private = self.attributes['private']
             self.dueDate = self.attributes['due-date']
             self.startDate = self.attributes['start-date']
+            self.createdDate = self.attributes['created-on']
             if self.attributes['completed'] == 'true':
                 self.completed = True
             self.estimatedMinutes = self.attributes['estimated-minutes'] 

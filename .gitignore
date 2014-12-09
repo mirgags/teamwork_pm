@@ -6,3 +6,5 @@
 *.xlsx
 *.xlsm
 teamworkpm_api_key.txt
+db_interact.py
+db_name.txt

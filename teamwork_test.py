@@ -43,63 +43,71 @@ if __name__ == "__main__":
     alist = []
     acommentlist = []
     f = open('tw_export_%s.csv' % datetime.datetime.now(), 'wb')
-    f.write('ProjectID|CompanyName|Project|Creator|Description|Content|TaskID|' +              'DueDate|StartDate|EstimatedMinutes|' +                                    'Comments>>(First-Last-Date-Comment)\n')
+    f.write('ProjectID^CompanyName^Project^Creator^Description^Content^TaskID^' +              'DueDate^StartDate^EstimatedMinutes^' +                                    'Comments>>(First-Last-Date-Comment)\n')
     for p in t.projects:
         alist.append(project(p))
 #    alist[0].loadTasklist()
     for aProject in alist:
-       aProject.loadTasklist()
-       for aTasklist in aProject.taskList:
-            print aTasklist
-            for aTask in aProject.taskList[aTasklist]['todo-items']:
-#                print 'company: ', aTask['project-name'], '\n',                                  'task: ', aTask['content'], '\n',                                          'start date: ', aTask['start-date'], '\n',                                 'complete date: ', aTask['completed_on'], '\n',                            'created by: ', aTask['creator-firstname'], " ", aTask['creator-lastname'], '\n',                                                                     'description: ', aTask['description'].replace('\n', ' '), '\n',                                                                                      'assigned to: ', aTask['responsible-party-names'], '\n'
-#                print aTask
-                Task = task(aProject.projectID, aTask['id'])
-#                print Task.taskID
-                Task.loadTask()
-#                print Task.attributes
-                try:
-                    f.write(re.sub(r'\s+', ' ', aProject.projectID))
-                except UnicodeError:
-                    pass
-                for att in [Task.companyName, aTask['project-name'],                                  Task.creatorID, Task.description, Task.content,                            Task.taskID, Task.dueDate, Task.startDate,                                 Task.estimatedMinutes]:
-                    f.write("|")
-                    try:
-                        string = re.sub(r'\s+', ' ', att)
-                        for ch in ['\n', r'\r', '\f']:
-                            string.replace(ch, ' ')
-                        string.replace('|', 'PIPE')
-                        f.write(string)
-                    except UnicodeError:
-                        pass
-                Task.loadComments()
-                for comment in Task.commentsDict:
-                    f.write("|")
-                    try:
-                        f.write(Task.commentsDict[comment]['author-firstname'].replace('|', 'PIPE'))
-                    except UnicodeError:
-                        pass
-                    f.write("|")
-                    try:
-                        f.write(Task.commentsDict[comment]['author-lastname'].replace('|', 'PIPE'))
-                    except UnicodeError:
-                        pass
-                    f.write("|")
-                    try:
-                        f.write(Task.commentsDict[comment]['datetime'].replace('|', 'PIPE'))
-                    except UnicodeError:
-                        pass
-                    f.write("|")
-                    try:
-                        string = re.sub(r'\s+', ' ', Task.commentsDict[comment]['body'])
-                        for ch in ['\n', r'\r', '\f']:
-                            string.replace(ch, ' ')
-                        string.replace('|', 'PIPE')
-                        f.write(string)
-                    except UnicodeError:
-                        pass
-#                    print Task.commentsDict[comment]
-                f.write("\n")
+        try:
+            aProject.loadTasklist()
+            for aTasklist in aProject.taskList:
+                 print aTasklist
+                 for aTask in aProject.taskList[aTasklist]['todo-items']:
+#                     print 'company: ', aTask['project-name'], '\n',                                  'task: ', aTask['content'], '\n',                                          'start date: ', aTask['start-date'], '\n',                                 'complete date: ', aTask['completed_on'], '\n',                            'created by: ', aTask['creator-firstname'], " ", aTask['creator-lastname'], '\n',                                                                     'description: ', aTask['description'].replace('\n', ' '), '\n',                                                                                      'assigned to: ', aTask['responsible-party-names'], '\n'
+#                     print aTask
+                     Task = task(aProject.projectID, aTask['id'])
+#                     print Task.taskID
+                     Task.loadTask()
+#                     print Task.attributes
+#######     # Set Floor Date here ###########
+                     if Task.createdDate > '2014-01-07T00:00:00Z':
+                         try:
+                             f.write(re.sub(r'\s+', ' ', aProject.projectID))
+                         except UnicodeError:
+                             f.write("^")
+                             pass
+                         for att in [Task.companyName, aTask['project-name'],                                  Task.creatorID, Task.description, Task.content,                            Task.taskID, Task.dueDate, Task.startDate,                                 Task.estimatedMinutes]:
+                             f.write("^")
+                             try:
+                                 string = re.sub(r'\s+', ' ', att)
+                                 for ch in ['\n', r'\r', '\f']:
+                                     string.replace(ch, ' ')
+                                 string.replace('^', 'CARAT')
+                                 f.write(string)
+                             except UnicodeError:
+                                 f.write("^")
+                                 pass
+                         Task.loadComments()
+                         for comment in Task.commentsDict:
+                             f.write("^")
+                             try:
+                                 f.write(Task.commentsDict[comment]['author-firstname'].replace('^', 'CARAT'))
+                             except UnicodeError:
+                                 pass
+                                 f.write("^")
+                             try:
+                                 f.write(Task.commentsDict[comment]['author-lastname'].replace('^', 'CARAT'))
+                             except UnicodeError:
+                                 pass
+                                 f.write("^")
+                             try:
+                                 f.write(Task.commentsDict[comment]['datetime'].replace('^', 'CARAT'))
+                             except UnicodeError:
+                                 pass
+                                 f.write("^")
+                             try:
+                                 string = re.sub(r'\s+', ' ', Task.commentsDict[comment]['body'])
+                                 for ch in ['\n', r'\r', '\f']:
+                                     string.replace(ch, ' ')
+                                 string.replace('^', 'CARAT')
+                                 f.write(string)
+                             except UnicodeError:
+                                 f.write("^") 
+                                 pass
+#                             print Task.commentsDict[comment]
+                         f.write("\n")
+        except:
+            pass
     f.close()
 #        print aTasklist, ": ", alist[0].taskList[aTasklist],"\n\n"
         
