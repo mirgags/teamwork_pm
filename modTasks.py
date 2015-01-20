@@ -63,6 +63,7 @@ def getProjectTasks (headers, projectID, page=None, theTasks=None):
 
 
 def changeTask (headers, taskId, payload):
+    # See http://developer.teamwork.com/index.cfm/page/datareference#todo_item for payload parameters
     p = requests.put('http://clients.pint.com/tasks/%s.json' % \
         taskId, data=json.dumps(payload),\
         headers=headers)
@@ -77,24 +78,14 @@ if __name__ == "__main__":
     counter = 0
     for theTask in theTasks:
         counter += 1
-        if theTask['content'].find('PINT - Administrative Activity') < 0:
+        if theTask['content'].find('PINT - ZingChart') < 0:
             print theTask['content']
             payload = {'todo-item': {'content': 'PINT - Administrative Activity: %s' % \
             theTask['content']}}
             print 'payload: %s' % payload 
             changeTask(headers, theTask['id'], payload)
     print 'total: ' + str(counter)
-    '''
-    taskLists = getTasklists (headers, 86732)
-    for thing in taskLists['todo-lists']:
-        for theTask in thing['todo-items']:
-            if theTask['content'].find('PINT - Administrative Activity') < 0:
-                print theTask['content']
-                payload = {'todo-item': {'content': 'PINT - Administrative Activity: %s' % \
-                theTask['content']}}
-                print 'payload: %s' % payload 
-                changeTask(headers, theTask['id'], payload)
-    '''
+
 
 
 #    taskList = json.loads(getUrl(\
