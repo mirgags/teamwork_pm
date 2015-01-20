@@ -27,12 +27,79 @@ def privateFiles (auth, projectID):
                 headers=headers)
             print p.text
 
+def getTasklists (headers, projectID):
+    theUrl = 'http://clients.pint.com/projects/%s/todo_lists.json?status=all' % projectID
+    print theUrl
+    r = requests.get(theUrl, headers=headers)
+    print r.status_code
+    print r.headers
+    return r.json()
+
+def getTasklist (headers, tasklistId):
+    theUrl = 'http://clients.pint.com/todo_lists/%s.json' % tasklistId
+    print theUrl
+    taskList = json.loads(getUrl(theUrl))
+    return taskList
+
+def getProjectTasks (headers, projectID, page=None, theTasks=None):
+    if not theTasks:
+        theTasks = []        
+    theUrl = 'http://clients.pint.com/projects/%s/tasks.json?includeCompletedTasks=true' % projectID
+    if page:
+        theUrl += '&page=%s' % page
+    print theUrl
+    r = requests.get(theUrl, headers=headers)
+    print r.status_code
+    page = int(r.headers['x-page'])
+    for header in r.headers:
+        print header + ': ' + r.headers[header]
+    for item in r.json()['todo-items']:
+        theTasks.append(item)
+    print len(theTasks)
+    page += 1
+    if page <= int(r.headers['x-pages']):
+        return getProjectTasks(headers, projectID, page, theTasks)
+    return theTasks
+
+
+def changeTask (headers, taskId, payload):
+    p = requests.put('http://clients.pint.com/tasks/%s.json' % \
+        taskId, data=json.dumps(payload),\
+        headers=headers)
+    print 'change PUT resp: %s' % p.status_code
+
 if __name__ == "__main__":
     auth = 'Basic '+base64.urlsafe_b64encode("%s:%s" % (getApiKey(), 'x'))
     print auth
     headers = {'Content-Type': 'application/json', \
                'Authorization': auth}
+    theTasks = getProjectTasks(headers, 86732)
+    counter = 0
+    for theTask in theTasks:
+        counter += 1
+        if theTask['content'].find('PINT - Administrative Activity') < 0:
+            print theTask['content']
+            payload = {'todo-item': {'content': 'PINT - Administrative Activity: %s' % \
+            theTask['content']}}
+            print 'payload: %s' % payload 
+            changeTask(headers, theTask['id'], payload)
+    print 'total: ' + str(counter)
+    '''
+    taskLists = getTasklists (headers, 86732)
+    for thing in taskLists['todo-lists']:
+        for theTask in thing['todo-items']:
+            if theTask['content'].find('PINT - Administrative Activity') < 0:
+                print theTask['content']
+                payload = {'todo-item': {'content': 'PINT - Administrative Activity: %s' % \
+                theTask['content']}}
+                print 'payload: %s' % payload 
+                changeTask(headers, theTask['id'], payload)
+    '''
+
+
 #    taskList = json.loads(getUrl(\
 #        'http://clients.pint.com/projects/85150/todo_lists.json'))
+
 #    unPrivateTasks(headers, taskList)
-    privateFiles(auth, 85151)
+
+#    privateFiles(auth, 85151)
