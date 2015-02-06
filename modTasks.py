@@ -74,6 +74,7 @@ if __name__ == "__main__":
     print auth
     headers = {'Content-Type': 'application/json', \
                'Authorization': auth}
+    '''
     theTasks = getProjectTasks(headers, 86732)
     counter = 0
     for theTask in theTasks:
@@ -85,12 +86,9 @@ if __name__ == "__main__":
             print 'payload: %s' % payload 
             changeTask(headers, theTask['id'], payload)
     print 'total: ' + str(counter)
-
-
-
-#    taskList = json.loads(getUrl(\
-#        'http://clients.pint.com/projects/85150/todo_lists.json'))
-
-#    unPrivateTasks(headers, taskList)
+    '''
+    taskList = json.loads(getUrl(\
+        'http://clients.pint.com/projects/111895/todo_lists.json'))
+    unPrivateTasks(headers, taskList)
 
 #    privateFiles(auth, 85151)
