@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*-coding: utf-8 -*-
 import os
 import urllib
 import urllib2
@@ -24,12 +26,25 @@ class twpm(object):
     def __init__(self):
         self.name = "TWPM Instance"
         self.projects = {}
+        self.tags = {}
 #        self.loadProjects()
 ### loads all projects in account
+
     def loadProjects(self):
         aList = json.loads(getUrl('http://clients.pint.com/projects.json'))
         for project in aList['projects']:
             self.projects[project['id']] = project 
+
+    def loadTags(self):
+        theJson = json.loads(getUrl('http://clients.pint.com/tags.json'))
+        print theJson
+        if theJson:
+            for tag in theJson['tags']:
+                self.tags[tag['name']] = tag
+
+    def addTag(self, tagName, tagColor):
+        theJson = { "tag": { "name": tagName, "color": tagColor } }
+        postUrl('http://clients.pint.com/tags.json', theJson)
 
 ### class of TeamworkPM project(tasklist)
 class project(twpm):
